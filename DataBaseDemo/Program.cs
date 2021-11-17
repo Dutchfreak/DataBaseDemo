@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,9 +28,9 @@ namespace DataBaseDemo
 
             //this part saves the stuff back to file. this is done when u did ur shit(searching/adding/whatever) just did it here first cause this is a demo
             XmlSerializer ser = new XmlSerializer(typeof(DataBase));
-            ser.Serialize(File.Create("Database.XML"), dataBase);
-
-
+            FileStream file = File.Create("Database.XML");
+            ser.Serialize(file, dataBase);
+            file.Close();
 
 
 
@@ -47,8 +48,9 @@ namespace DataBaseDemo
 
             //Now we reading or data back into memory
             XmlSerializer dser = new XmlSerializer(typeof(DataBase));
-            dataBase = (DataBase)dser.Deserialize(File.Create("Database.XML"));
-
+            file = File.Open("Database.XML",FileMode.Open);
+            dataBase = (DataBase)dser.Deserialize(file);
+            file.Close();
             Console.WriteLine(dataBase.entries.Count); //should be 3
 
 
@@ -65,6 +67,8 @@ namespace DataBaseDemo
                 Console.WriteLine("No entry found");
             }
 
+
+            Console.ReadKey();
 
         }
     }
